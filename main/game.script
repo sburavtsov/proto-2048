@@ -1,5 +1,6 @@
 function init(self)
-	collectionfactory.create("factory#square", vmath.vector3(1,1,1))
+	for
+	collectionfactory.create("factory#square", vmath.vector3())
 end
 
 function final(self)
