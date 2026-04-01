@@ -1,2 +1,24 @@
 name: "main"
+instances {
+  id: "camera"
+  prototype: "/orthographic/camera.go"
+}
 scale_along_z: 0
+embedded_instances {
+  id: "factory"
+  data: "embedded_components {\n"
+  "  id: \"square\"\n"
+  "  type: \"collectionfactory\"\n"
+  "  data: \"prototype: \\\"/main/square.collection\\\"\\n"
+  "\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "go"
+  data: "components {\n"
+  "  id: \"game\"\n"
+  "  component: \"/main/game.script\"\n"
+  "}\n"
+  ""
+}
