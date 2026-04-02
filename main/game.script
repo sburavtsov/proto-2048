@@ -1,6 +1,59 @@
-function init(self)
-	for
-	collectionfactory.create("factory#square", vmath.vector3())
+local camera = require("orthographic.camera")
+
+---@class chip
+---@field number integer?
+---@field current_x integer
+---@field current_y integer
+---@field number_url url
+---@field view hash
+
+---@class field
+---@field elements array<array<chip>>
+---@field current_i integer
+---@field current_j integer?
+
+---@comment
+---@param value integer?
+local function create_chip()
+	local ans = {
+		number = value
+	}
+	return ans
+end
+
+---@comment
+---@return table
+local function create_field()
+	local field = {}
+	for i = 1, 4, 1 do
+		local row = {}
+		for j = 1, 4, 1 do
+			local chip = create_chip()
+			chip.current_i = i
+			chip.current_j = j
+			table.insert(row, chip)	
+		end
+		table.insert(field, row)
+	end
+	return field
+end
+
+---@comment
+function init()
+	local HASH_SQUARE = hash("/square")
+	local field = create_field()
+	for i, row in ipairs(field) do
+		for j, chip in ipairs(row) do
+			---@cast chip chip
+			local view = collectionfactory.create("factory#square", vmath.vector3())
+			chip.current_y = j
+			chip.current_x = i
+			chip.view = view[HASH_SQUARE]
+			chip.number_url = msg.url(nil, chip.view, "number")
+			label.set_text(chip.number_url, tostring(chip.current_x) .. tostring(chip.current_y))
+			go.set_position(vmath.vector3(chip.current_x, chip.current_y, 0) * 80, chip.view)
+		end
+	end
 end
 
 function final(self)

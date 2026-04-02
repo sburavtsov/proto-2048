@@ -1,0 +1,4 @@
+images {
+  image: "/main/chip_back.png"
+}
+extrude_borders: 2
