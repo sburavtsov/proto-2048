@@ -42,6 +42,8 @@ end
 function init()
 	local HASH_SQUARE = hash("/square")
 	local field = create_field()
+	local CHIP_SIZE = 128
+	local CHIP_SPACING = 8
 	for i, row in ipairs(field) do
 		for j, chip in ipairs(row) do
 			---@cast chip chip
@@ -51,9 +53,16 @@ function init()
 			chip.view = view[HASH_SQUARE]
 			chip.number_url = msg.url(nil, chip.view, "number")
 			label.set_text(chip.number_url, tostring(chip.current_x) .. tostring(chip.current_y))
-			go.set_position(vmath.vector3(chip.current_x, chip.current_y, 0) * 80, chip.view)
+			go.set_position(vmath.vector3(chip.current_x - 1, chip.current_y - 1, 0) * (CHIP_SIZE + CHIP_SPACING), chip.view)
 		end
 	end
+	local v3center = vmath.vector3( -CHIP_SIZE / 2 + (CHIP_SIZE * 4 + CHIP_SPACING * 3) / 2,
+	-CHIP_SIZE / 2 + (CHIP_SIZE * 4 + CHIP_SPACING * 3) / 2, 0.0)
+	go.set_position(v3center, "/camera")
+	//camera.follow_offset(hash("/camera"), v3center)
+	--camera.follow(hash("/camera"), hash("/debug"), {lerp = 0.0, offset = v3center, horizontal = true, vertical = true,})
+	
+
 end
 
 function final(self)
