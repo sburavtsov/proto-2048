@@ -14,9 +14,9 @@ local camera = require("orthographic.camera")
 
 ---@comment
 ---@param value integer?
-local function create_chip()
+local function create_chip(value)
 	local ans = {
-		number = value
+		number = value or 0
 	}
 	return ans
 end
@@ -24,17 +24,22 @@ end
 ---@comment
 ---@return table
 local function create_field()
-	local field = {}
+
+	local field = {
+		elements = {}
+	}
 	for i = 1, 4, 1 do
 		local row = {}
 		for j = 1, 4, 1 do
 			local chip = create_chip()
-			chip.current_i = i
-			chip.current_j = j
+			chip.current_x = j
+			chip.current_y = i
 			table.insert(row, chip)	
 		end
-		table.insert(field, row)
+		table.insert(field.elements, row)
 	end
+
+	field.elements[1][1].number = 1
 	return field
 end
 
@@ -44,25 +49,24 @@ function init()
 	local field = create_field()
 	local CHIP_SIZE = 128
 	local CHIP_SPACING = 8
-	for i, row in ipairs(field) do
+	for i, row in ipairs(field.elements) do
 		for j, chip in ipairs(row) do
 			---@cast chip chip
 			local view = collectionfactory.create("factory#square", vmath.vector3())
-			chip.current_y = j
-			chip.current_x = i
 			chip.view = view[HASH_SQUARE]
 			chip.number_url = msg.url(nil, chip.view, "number")
-			label.set_text(chip.number_url, tostring(chip.current_x) .. tostring(chip.current_y))
+			if (chip.number ~= 0) then
+				label.set_text(chip.number_url, tostring(chip.number))			
+			else
+				label.set_text(chip.number_url, "")			
+			end
+			
 			go.set_position(vmath.vector3(chip.current_x - 1, chip.current_y - 1, 0) * (CHIP_SIZE + CHIP_SPACING), chip.view)
 		end
 	end
 	local v3center = vmath.vector3( -CHIP_SIZE / 2 + (CHIP_SIZE * 4 + CHIP_SPACING * 3) / 2,
 	-CHIP_SIZE / 2 + (CHIP_SIZE * 4 + CHIP_SPACING * 3) / 2, 0.0)
 	go.set_position(v3center, "/camera")
-	//camera.follow_offset(hash("/camera"), v3center)
-	--camera.follow(hash("/camera"), hash("/debug"), {lerp = 0.0, offset = v3center, horizontal = true, vertical = true,})
-	
-
 end
 
 function final(self)
