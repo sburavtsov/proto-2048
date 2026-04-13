@@ -1,4 +1,4 @@
-local camera = require("orthographic.camera")
+local camea = require("orthographic.camera")
 local flow = require("flow.flow")
 
 local CHIP_SIZE = 128
@@ -18,6 +18,12 @@ local CHIP_SPACING = 8
 ---@field current_i integer
 ---@field current_j integer?
 
+---@alias direction
+---| '"left"'
+---| '"right"'
+---| '"up"'
+---| '"down"'
+
 local game_state = {
 	input_left = false,
 	input_right = false,
@@ -34,8 +40,8 @@ local function create_chip(value)
 	return ans
 end
 
----@comment
----@return table
+---@ Create empty field
+---@return field
 local function create_field()
 
 	local field = {
@@ -52,13 +58,30 @@ local function create_field()
 		table.insert(field.elements, row)
 	end
 
-	field.elements[1][1].number = 1
+	
 	return field
+end
+
+
+---@ Spawn first chips
+---@param field field
+local function init_field(field)
+	local min = 1
+	local max = 4
+	local count = 2
+
+	for _ = 1, count, 1 do
+		local x = math.random(min, max)
+		local y = math.random(min, max)
+		field.elements[y][x].number = 2
+
+	end
 end
 
 local function create_field_view()
 	local HASH_SQUARE = hash("/square")
 	local field = create_field()
+	init_field(field)
 	for i, row in ipairs(field.elements) do
 		for j, chip in ipairs(row) do
 			---@cast chip chip
@@ -76,7 +99,9 @@ local function create_field_view()
 	end
 end
 
-local function gameplay_input()
+---@comment
+---@return direction?
+function gameplay_input()
 	if game_state.input_left then return "left"
 	elseif game_state.input_right then return "right"
 	elseif game_state.input_up then return "up"
@@ -84,13 +109,21 @@ local function gameplay_input()
 	end
 end
 
+---@comment
+---@param which direction
+local function gameplay_move(which)
+	
+end
+
 local function gameplay()
 	--- spawn and animate
 	create_field_view()
 	while true do
 		flow.delay(0.1)
-		local a = gameplay_input()
-		pprint(a)
+		local which = gameplay_input()
+		if which then
+			gameplay_move(which)
+		end
 
 		--- process input	
 	end
@@ -99,6 +132,7 @@ end
 ---@comment
 function init(self)
 
+	math.randomseed(os.time())
 	msg.post(".", "acquire_input_focus")
 	flow.start(gameplay, options, on_error)
 	local v3center = vmath.vector3( -CHIP_SIZE / 2 + (CHIP_SIZE * 4 + CHIP_SPACING * 3) / 2,
@@ -107,6 +141,8 @@ function init(self)
 end
 ---@diagnostic disable-next-line
 function final(self)
+	flow.stop()
+	msg.post(".", "release_input_focus")
 	-- Add finalization code here
 	-- Learn more: https://defold.com/manuals/script/
 	-- Remove this function if not needed
