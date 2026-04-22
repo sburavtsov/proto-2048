@@ -1,28 +1,13 @@
-local camea = require("orthographic.camera")
+local camera = require("orthographic.camera")
 local flow = require("flow.flow")
+local logic = require("datamodel.logic")
 
 local CHIP_SIZE = 128
 local CHIP_SPACING = 8
 
 
 
----@class chip
----@field number integer?
----@field current_x integer
----@field current_y integer
----@field number_url url
----@field view hash
 
----@class field
----@field elements array<array<chip>>
----@field current_i integer
----@field current_j integer?
-
----@alias direction
----| '"left"'
----| '"right"'
----| '"up"'
----| '"down"'
 
 local game_state = {
 	input_left = false,
@@ -31,70 +16,31 @@ local game_state = {
 	input_down = false,
 }
 
----@comment
----@param value integer?
-local function create_chip(value)
-	local ans = {
-		number = value or 0
-	}
-	return ans
-end
-
----@ Create empty field
----@return field
-local function create_field()
-
-	local field = {
-		elements = {}
-	}
-	for i = 1, 4, 1 do
-		local row = {}
-		for j = 1, 4, 1 do
-			local chip = create_chip()
-			chip.current_x = j
-			chip.current_y = i
-			table.insert(row, chip)	
-		end
-		table.insert(field.elements, row)
-	end
-
-	
-	return field
-end
-
-
----@ Spawn first chips
----@param field field
-local function init_field(field)
-	local min = 1
-	local max = 4
-	local count = 2
-
-	for _ = 1, count, 1 do
-		local x = math.random(min, max)
-		local y = math.random(min, max)
-		field.elements[y][x].number = 2
-
-	end
-end
 
 local function create_field_view()
 	local HASH_SQUARE = hash("/square")
-	local field = create_field()
-	init_field(field)
+	local field = logic.create_field()
+	print("create_field")
+	logic.init_field(field)
+	print("init_field")
+	pprint(field.elements)
 	for i, row in ipairs(field.elements) do
 		for j, chip in ipairs(row) do
-			---@cast chip chip
-			local view = collectionfactory.create("factory#square", vmath.vector3())
-			chip.view = view[HASH_SQUARE]
-			chip.number_url = msg.url(nil, chip.view, "number")
-			if (chip.number ~= 0) then
-				label.set_text(chip.number_url, tostring(chip.number))			
-			else
-				label.set_text(chip.number_url, "")			
-			end
+			pprint(chip)
+			if chip then
+				print(i, j)
+				---@cast chip chip
+				local view = collectionfactory.create("factory#square", vmath.vector3())
+				chip.view = view[HASH_SQUARE]
+				chip.number_url = msg.url(nil, chip.view, "number")
+				if (chip.number ~= 0) then
+					label.set_text(chip.number_url, tostring(chip.number))			
+				else
+					label.set_text(chip.number_url, "")			
+				end
 			
-			go.set_position(vmath.vector3(chip.current_x - 1, chip.current_y - 1, 0) * (CHIP_SIZE + CHIP_SPACING), chip.view)
+				go.set_position(vmath.vector3(chip.current_x - 1, chip.current_y - 1, 0) * (CHIP_SIZE + CHIP_SPACING), chip.view)
+			end
 		end
 	end
 end
@@ -134,7 +80,7 @@ function init(self)
 
 	math.randomseed(os.time())
 	msg.post(".", "acquire_input_focus")
-	flow.start(gameplay, options, on_error)
+	flow.start(gameplay, nil, nil)
 	local v3center = vmath.vector3( -CHIP_SIZE / 2 + (CHIP_SIZE * 4 + CHIP_SPACING * 3) / 2,
 	-CHIP_SIZE / 2 + (CHIP_SIZE * 4 + CHIP_SPACING * 3) / 2, 0.0)
 	go.set_position(v3center, "/camera")

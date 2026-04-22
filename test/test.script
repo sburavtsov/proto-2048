@@ -1,0 +1,8 @@
+local deftest = require "deftest.deftest"
+
+local test_logic = require "test.test_logic"
+
+function init(self)
+	deftest.add(test_logic)
+	deftest.run({ coverage = { enabled = false }, pattern = nil })
+end

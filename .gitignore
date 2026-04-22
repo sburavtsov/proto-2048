@@ -9,3 +9,5 @@ Thumbs.db
 .project
 .cproject
 builtins
+luacov.report.out
+luacov.stats.out
