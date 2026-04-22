@@ -11,3 +11,5 @@ Thumbs.db
 builtins
 luacov.report.out
 luacov.stats.out
+bob.jar
+dmengine_headless

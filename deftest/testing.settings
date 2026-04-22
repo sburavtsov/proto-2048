@@ -1,7 +1,2 @@
 [bootstrap]
-main_collection = /test/test.collection
-
-[liveupdate]
-mode = Folder
-supported-versions = 
-
+main_collection = /test/test.collectionc

@@ -2,16 +2,15 @@
     "configurations": [
 
         {
-    "name": "Unit tests",
-    "type": "lua-local",
-    "request": "launch",
-    "verbose": true,
-    "program": {
-        "command": "${workspaceFolder}/deftest/run.sh"
-    },
-    "args": ["arm64-macos"]
-},
-
+            "name": "Unit tests",
+            "type": "lua-local",
+            "request": "launch",
+            "verbose": true,
+            "program": {
+                "command": "${workspaceFolder}/deftest/run.sh"
+            },
+            "args": ["arm64-macos"]
+        },
         {
             "name": "Defold Kit",
             "type": "lua-local",
