@@ -20,15 +20,11 @@ local game_state = {
 local function create_field_view()
 	local HASH_SQUARE = hash("/square")
 	local field = logic.create_field()
-	print("create_field")
 	logic.init_field(field)
-	print("init_field")
-	pprint(field.elements)
+
 	for i, row in ipairs(field.elements) do
 		for j, chip in ipairs(row) do
-			pprint(chip)
 			if chip then
-				print(i, j)
 				---@cast chip chip
 				local view = collectionfactory.create("factory#square", vmath.vector3())
 				chip.view = view[HASH_SQUARE]
@@ -85,6 +81,7 @@ function init(self)
 	-CHIP_SIZE / 2 + (CHIP_SIZE * 4 + CHIP_SPACING * 3) / 2, 0.0)
 	go.set_position(v3center, "/camera")
 end
+
 ---@diagnostic disable-next-line
 function final(self)
 	flow.stop()

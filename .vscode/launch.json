@@ -11,6 +11,28 @@
             },
             "args": ["arm64-macos"]
         },
+        
+        {
+            "name": "DT Launch",
+            "type": "lua",
+            "request": "launch",
+            "stopOnEntry": true,
+            "runtimeExecutable": "luajit",
+            "runtimeArgs": "${workspaceFolder}/test/test.lua",
+            "inject": "none",
+            "address": "127.0.0.1:12306"
+        },
+        {
+            "type": "lua-local",
+            "request": "launch",
+            "name": "DefTest",
+            "program": {
+                "command": "luajit"
+            },
+            "args": ["${workspaceFolder}/test/test.lua"],
+            "scriptRoots": ["."]
+        },
+
         {
             "name": "Defold Kit",
             "type": "lua-local",
